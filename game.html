@@ -9,18 +9,73 @@
     <meta name="theme-color" content="#16213e">
 
     <style>
-        /* CSS (sem alterações) */
-        :root{--bg-color:#1a1a2e;--board-bg-color:#16213e;--cell-bg-color:#0f3460;--text-color:#e94560;--accent-color:#fff;--player1-color:#53a8b6;--player2-color:#e94560;--win-line-color:#f5f542}body{font-family:Arial,sans-serif;background-color:var(--bg-color);color:var(--accent-color);display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;margin:0;padding:10px}h1{color:var(--text-color);margin-bottom:15px;font-size:1.8em}.game-info{display:flex;justify-content:space-between;width:320px;max-width:90%;margin-bottom:20px;font-size:1.1em}.player-score{padding:8px 15px;border-radius:8px;font-weight:700;transition:all .3s ease;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:48%;text-align:center}#player1-info{background-color:var(--player1-color)}#player2-info{background-color:var(--player2-color)}.player-score.active{box-shadow:0 0 15px var(--accent-color);transform:scale(1.05)}#turn-info{width:100%;text-align:center;font-size:1.5em;margin-bottom:20px;font-weight:700;min-height:1.5em}.game-board{display:grid;grid-template-columns:repeat(3,100px);grid-template-rows:repeat(3,100px);gap:5px;background-color:var(--board-bg-color);padding:10px;border-radius:10px;position:relative;max-width:calc(3*100px + 2*5px + 2*10px);box-sizing:content-box}.cell{background-color:var(--cell-bg-color);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:60px;font-weight:700;cursor:pointer;transition:background-color .3s;width:100px;height:100px}.cell:not(.X):not(.O):hover{background-color:#1f4a81}.cell.X{color:var(--player1-color);cursor:default}.cell.O{color:var(--player2-color);cursor:default}.win-line{position:absolute;background-color:var(--win-line-color);border-radius:5px;box-shadow:0 0 10px var(--win-line-color);pointer-events:none}#reset-button{margin-top:25px;padding:12px 25px;font-size:1em;font-weight:700;color:var(--accent-color);background-color:var(--text-color);border:none;border-radius:8px;cursor:pointer}#reset-button:hover{background-color:#c93048}#game-id-display{font-size:.9em;color:var(--accent-color);margin-top:15px;opacity:.7}@media (max-width:380px){.game-board{grid-template-columns:repeat(3,80px);grid-template-rows:repeat(3,80px);max-width:calc(3*80px + 2*5px + 2*10px)}.cell{width:80px;height:80px;font-size:45px}.game-info{width:calc(3*80px + 2*5px + 2*10px)}h1{font-size:1.5em}#turn-info{font-size:1.3em}}
+        :root {
+            --bg-color: #1a1a2e; --board-bg-color: #16213e; --cell-bg-color: #0f3460;
+            --text-color: #e94560; --accent-color: #ffffff; --player1-color: #53a8b6; --player2-color: #e94560;
+            --win-line-color: #f5f542;
+        }
+        body {
+            font-family: 'Arial', sans-serif; background-color: var(--bg-color); color: var(--accent-color);
+            display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 10px;
+        }
+        h1 { color: var(--text-color); margin-bottom: 15px; font-size: 1.8em; }
+        .game-info { display: flex; justify-content: space-around; /* Espaçar igualmente */ width: 320px; max-width: 90%; margin-bottom: 20px; font-size: 1.1em; }
+        .player-score {
+            padding: 8px 15px; border-radius: 8px; font-weight: bold; transition: all 0.3s ease;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 48%;
+            text-align: center;
+        }
+        /* NOVO: Estilo para vitórias */
+        .victories { font-size: 0.9em; opacity: 0.9; display: block; margin-top: 3px;}
+
+        #player1-info { background-color: var(--player1-color); }
+        #player2-info { background-color: var(--player2-color); }
+        .player-score.active { box-shadow: 0 0 15px var(--accent-color); transform: scale(1.05); }
+        #turn-info { width: 100%; text-align: center; font-size: 1.5em; margin-bottom: 20px; font-weight: bold; min-height: 1.5em; }
+        .game-board {
+            display: grid; grid-template-columns: repeat(3, 100px); grid-template-rows: repeat(3, 100px);
+            gap: 5px; background-color: var(--board-bg-color); padding: 10px; border-radius: 10px; position: relative;
+             max-width: calc(3 * 100px + 2 * 5px + 2 * 10px); box-sizing: content-box;
+        }
+        .cell {
+            background-color: var(--cell-bg-color); border-radius: 8px; display: flex; align-items: center; justify-content: center;
+            font-size: 60px; font-weight: bold; cursor: pointer; transition: background-color 0.3s;
+             width: 100px; height: 100px;
+        }
+        .cell:not(.X):not(.O):hover { background-color: #1f4a81; }
+        .cell.X { color: var(--player1-color); cursor: default; }
+        .cell.O { color: var(--player2-color); cursor: default; }
+        .win-line { position: absolute; background-color: var(--win-line-color); border-radius: 5px; box-shadow: 0 0 10px var(--win-line-color); pointer-events: none; }
+
+        /* NOVO: Botão Jogar Novamente */
+        #play-again-btn {
+             margin-top: 15px; padding: 10px 20px; font-size: 1em; font-weight: bold;
+             color: var(--accent-color); background-color: var(--player1-color); /* Cor diferente */
+             border: none; border-radius: 8px; cursor: pointer; display: none; /* Começa escondido */
+        }
+        #play-again-btn:hover { background-color: #438a9a; }
+
+        #reset-button { margin-top: 10px; padding: 10px 20px; font-size: 1em; font-weight: bold; color: var(--accent-color); background-color: var(--text-color); border: none; border-radius: 8px; cursor: pointer; }
+         #reset-button:hover { background-color: #c93048; }
+        #game-id-display { font-size: 0.9em; color: var(--accent-color); margin-top: 15px; opacity: 0.7; }
+         @media (max-width: 380px) { .game-board { grid-template-columns: repeat(3, 80px); grid-template-rows: repeat(3, 80px); max-width: calc(3 * 80px + 2 * 5px + 2 * 10px); } .cell { width: 80px; height: 80px; font-size: 45px; } .game-info { width: calc(3 * 80px + 2 * 5px + 2 * 10px); } h1 { font-size: 1.5em;} #turn-info { font-size: 1.3em;} }
     </style>
 </head>
 <body>
-    <h1>Jogo da Velha Online</h1> <div class="game-info"> <div id="player1-info" class="player-score">X (P1): 0</div> <div id="player2-info" class="player-score">O (P2): 0</div> </div> <div id="turn-info">Conectando...</div> <div class="game-board" id="game-board"></div> <button id="reset-button">Novo Jogo</button> <div id="game-id-display"></div>
+    <h1>Jogo da Velha Online</h1>
+    <div class="game-info">
+        <div id="player1-info" class="player-score">X (P1): 0</div>
+        <div id="player2-info" class="player-score">O (P2): 0</div>
+    </div>
+    <div id="turn-info">Conectando...</div>
+    <div class="game-board" id="game-board"></div>
+    <button id="play-again-btn">Jogar Novamente</button> <button id="reset-button">Voltar ao Lobby</button>
+    <div id="game-id-display"></div>
 
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
-
     <script>
-        // Config Firebase
+        // *** SUA CONFIGURAÇÃO REAL DO FIREBASE ***
         const firebaseConfig = {
           apiKey: "AIzaSyAoRUTFaVz8rJ5uBqC0xhb7dZuCf_5Pe38",
           authDomain: "jogo-da-velha-fd487.firebaseapp.com",
@@ -30,6 +85,7 @@
           messagingSenderId: "281796537233",
           appId: "1:281796537233:web:ecb5b86ab5d415e0bec830"
         };
+        // *******************************************
         let database;
         try { firebase.initializeApp(firebaseConfig); database = firebase.database(); console.log("Firebase inicializado (Game)."); }
         catch (e) { console.error("ERRO FIREBASE:", e); alert("Erro Firebase."); throw new Error("Falha Firebase"); }
@@ -40,77 +96,66 @@
             const player2InfoEl = document.getElementById('player2-info');
             const turnInfoEl = document.getElementById('turn-info');
             const resetButton = document.getElementById('reset-button');
+            const playAgainBtn = document.getElementById('play-again-btn'); // Seleciona o novo botão
             const gameIdDisplay = document.getElementById('game-id-display');
             let gameStateRef, gameId, playerId, myPlayerUUID, myPlayerName;
             let playerNames = { 1: "P1", 2: "P2" };
             let isGameActive = false;
 
-            // --- FUNÇÃO PARA PEGAR/PEDIR O NOME ---
-            function getPlayerName() { let n=sessionStorage.getItem('jogoVelhaPlayerName'); if(!n){n=prompt("Qual seu nome?"); if(!n||n.trim()==='')n=`Jogador_${Math.random().toString(36).substr(2, 4)}`; sessionStorage.setItem('jogoVelhaPlayerName',n)} return n; }
+            function getPlayerName() { let n=sessionStorage.getItem('jogoVelhaPlayerName'); if(!n){n=prompt("Qual seu nome?"); if(!n||n.trim()==='')n=`Jogador_${Math.random().toString(36).substr(2,4)}`; sessionStorage.setItem('jogoVelhaPlayerName',n)} return n; }
 
             // --- FUNÇÃO DE INICIALIZAÇÃO (Cria ou Entra) ---
-            function initGame() { console.log("Iniciando initGame..."); myPlayerName=getPlayerName(); const p=new URLSearchParams(window.location.search); gameId=p.get('game'); myPlayerUUID=sessionStorage.getItem('jogoVelhaUUID'); if(!myPlayerUUID){myPlayerUUID=Math.random().toString(36).substr(2,9); sessionStorage.setItem('jogoVelhaUUID',myPlayerUUID)} if(!myPlayerUUID||!gameId){alert("Info sala/jogador não encontrada."); window.location.href='index.html'; return} console.log(`Conectando sala ${gameId} com UUID ${myPlayerUUID}`); gameStateRef=database.ref('velha_games/'+gameId); gameStateRef.transaction(s=>{console.log("TX init - Estado:",s); if(s===null){console.log("TX abort: Sala nula.");return null} if(s.player1_uuid===myPlayerUUID)playerId=1; else if(s.player2_uuid===myPlayerUUID)playerId=2; else if(!s.player2_uuid){playerId=2; s.player2_uuid=myPlayerUUID; s.player2_name=myPlayerName} else {console.log("TX abort: Sala cheia."); return;} console.log(`TX init - Definido playerId: ${playerId}`); return s;},(e,c,sn)=>{console.log(`TX init - Resultado: err=${e}, committed=${c}`); if(e||!c){alert(sn?.val()?.player2_uuid&&sn.val().player2_uuid!==myPlayerUUID?"Sala cheia!":"Sala não encontrada!"); window.history.replaceState(null,null,window.location.pathname); createNewGame()} else {console.log("Conectado como Jogador:",playerId); setupGameListeners()}})}
+            function initGame() {
+                 console.log("Iniciando initGame..."); myPlayerName=getPlayerName(); const p=new URLSearchParams(window.location.search); gameId=p.get('game'); myPlayerUUID=sessionStorage.getItem('jogoVelhaUUID'); if(!myPlayerUUID){myPlayerUUID=Math.random().toString(36).substr(2,9); sessionStorage.setItem('jogoVelhaUUID',myPlayerUUID)} if(!myPlayerUUID||!gameId){alert("Info sala/jogador inválida."); window.location.href='index.html'; return} console.log(`Conectando sala ${gameId}...`); gameStateRef=database.ref('velha_games/'+gameId); gameStateRef.transaction(s=>{if(s===null)return null; if(s.player1_uuid===myPlayerUUID)playerId=1; else if(s.player2_uuid===myPlayerUUID)playerId=2; else if(!s.player2_uuid){playerId=2; s.player2_uuid=myPlayerUUID; s.player2_name=myPlayerName} else return; console.log(`TX init - PlayerId: ${playerId}`); return s;},(e,c,sn)=>{if(e||!c){alert(sn?.val()?.player2_uuid&&sn.val().player2_uuid!==myPlayerUUID?"Sala cheia!":"Sala não encontrada!"); window.history.replaceState(null,null,window.location.pathname); createNewGame()} else {console.log("Conectado como:",playerId); setupGameListeners()}})}
 
-            // --- Função: Criar Novo Jogo da Velha ---
-            function createNewGame() { gameId=Math.random().toString(36).substr(2,6); window.history.replaceState(null,null,`?game=${gameId}`); gameStateRef=database.ref('velha_games/'+gameId); playerId=1; const state={gameId:gameId,player1_uuid:myPlayerUUID,player1_name:myPlayerName,player2_uuid:null,player2_name:null,currentPlayer:1,winner:null,winnerInfo:null,board:Array(9).fill(null),scores:{1:0,2:0,ties:0}}; gameStateRef.set(state).then(()=>{console.log(`Sala ${gameId} criada.`); setupGameListeners()}).catch(e=>{console.error("Erro criar sala:",e);alert("Erro criar sala.")})}
+            // --- Função: Criar Novo Jogo da Velha (Atualizado com gameStats) ---
+            function createNewGame() {
+                gameId=Math.random().toString(36).substr(2,6); window.history.replaceState(null,null,`?game=${gameId}`); gameStateRef=database.ref('velha_games/'+gameId); playerId=1;
+                // ATUALIZADO: Usa gameStats para vitórias/empates
+                const state={gameId:gameId,player1_uuid:myPlayerUUID,player1_name:myPlayerName,player2_uuid:null,player2_name:null,currentPlayer:1,winner:null,winnerInfo:null,board:Array(9).fill(null),gameStats:{winsX:0, winsO:0, ties:0}};
+                gameStateRef.set(state).then(()=>{console.log(`Sala ${gameId} criada.`); setupGameListeners()}).catch(e=>{console.error("Erro criar sala:",e);alert("Erro criar sala.")})}
 
             // --- Função: "Ouvir" as mudanças ---
             function setupGameListeners() {
-                 gameIdDisplay.textContent = `ID da Sala: ${gameId}`;
-                 if (gameStateRef) gameStateRef.off();
+                 gameIdDisplay.textContent = `ID da Sala: ${gameId}`; if (gameStateRef) gameStateRef.off();
                  gameStateRef.on('value', (snapshot) => {
-                     const state = snapshot.val();
-                     console.log("onValue Estado:", state);
-                     if (!state) { if (isGameActive) { isGameActive = false; if (document.visibilityState === 'visible') { alert("Jogo encerrado."); window.location.href = 'tictactoe.html'; }} return; }
-                     isGameActive = true;
-                     playerNames[1] = state.player1_name || "P1"; playerNames[2] = state.player2_name || "P2";
-                     // *** Normalização Robusta ***
-                     const newBoard = Array(9).fill(null); if (state.board) { for (let i = 0; i < 9; i++) { if (state.board[i] != null) { newBoard[i] = state.board[i]; } } } state.board = newBoard;
-                     state.scores = state.scores || { 1: 0, 2: 0, ties: 0 };
-                     console.log("Estado normalizado:", state);
-                     updateScoreboard(state.scores); updateTurnInfo(state.currentPlayer, state.winner, state.player2_uuid); renderBoard(state.board, state.winnerInfo);
-                 }, (error) => { console.error("Erro listener:", error); alert("Erro conexão."); isGameActive = false; });
+                     const state = snapshot.val(); console.log("onValue Estado:", state);
+                     if (!state) { if (isGameActive) { isGameActive = false; if(document.visibilityState==='visible')alert("Jogo encerrado."); window.location.href='index.html';} return; }
+                     isGameActive = true; playerNames[1] = state.player1_name || "P1"; playerNames[2] = state.player2_name || "P2";
+                     const nb = Array(9).fill(null); if (state.board){for(let i=0;i<9;i++){if(state.board[i]!=null)nb[i]=state.board[i]}} state.board = nb;
+                     state.gameStats = state.gameStats || { winsX: 0, winsO: 0, ties: 0 }; // Garante gameStats
+                     updateScoreboard(state.gameStats); updateTurnInfo(state.currentPlayer, state.winner, state.player2_uuid); renderBoard(state.board, state.winnerInfo);
+                 }, (e) => { console.error("Erro listener:", e); alert("Erro conexão."); isGameActive = false; });
             }
 
-            // --- Função: Renderizar o Tabuleiro ---
+            // --- Função: Renderizar o Tabuleiro (Mostra/Esconde Botão) ---
             function renderBoard(boardState, winnerInfo) {
                  console.log("Render:", boardState, winnerInfo); gameBoard.innerHTML = ''; const ol=gameBoard.querySelector('.win-line'); if(ol)ol.remove(); if (!Array.isArray(boardState)||boardState.length!==9) { console.error("Board inválido render:", boardState); boardState = Array(9).fill(null); }
                  boardState.forEach((v, i) => { const c=document.createElement('div'); c.classList.add('cell'); c.dataset.index=i; if(v){c.textContent=v; c.classList.add(v); c.style.cursor='default'} else if(!winnerInfo){c.addEventListener('click',()=>onCellClick(i))} else {c.style.cursor='default'} gameBoard.appendChild(c); });
-                 if (winnerInfo) { drawWinLine(winnerInfo); } console.log("Render Concluído.");
+                 if (winnerInfo) { drawWinLine(winnerInfo); }
+                 // Mostra botão se jogo acabou, esconde se recomeçou
+                 playAgainBtn.style.display = winnerInfo !== undefined && winnerInfo !== null ? 'block' : 'none';
+                 console.log("Render Concluído.");
             }
 
-            // --- Função: Lógica do Clique na Célula (NORMALIZAÇÃO INTERNA) ---
+            // --- Função: Lógica do Clique na Célula (Atualizado com gameStats) ---
             function onCellClick(index) {
-                console.log(`Click Célula ${index}.`);
-                if (!isGameActive) { console.warn("Click ignorado."); return; }
+                console.log(`Click Célula ${index}.`); if (!isGameActive) return;
                 gameStateRef.transaction(currentState => {
-                    if (!currentState) { console.log("TX abort: Estado nulo"); return; }
-
-                    // *** INÍCIO DA CORREÇÃO: Normaliza board DENTRO da TX ***
-                    let currentBoard = Array(9).fill(null);
-                    if (currentState.board) {
-                        for (let i = 0; i < 9; i++) {
-                            if (currentState.board[i] != null) { currentBoard[i] = currentState.board[i]; }
-                        }
-                    }
-                    // *** FIM DA CORREÇÃO ***
-
+                    if (!currentState) { return; }
+                    let currentBoard = Array(9).fill(null); if (currentState.board) { for (let i = 0; i < 9; i++) { if (currentState.board[i] != null) { currentBoard[i] = currentState.board[i]; } } }
                     console.log("TX Estado:", currentState, "Board Norm:", currentBoard); console.log(`TX - Meu ID: ${playerId}, Vez: ${currentState.currentPlayer}`);
-
-                    // Validações (USA currentBoard normalizado)
-                    if (currentState.winner) { console.warn("TX abort: Jogo acabou"); return; }
-                    if (currentState.currentPlayer !== playerId) { console.warn(`TX abort: Não é minha vez.`); return; }
-                    if (!currentState.player2_uuid) { console.warn("TX abort: P2 não conectou."); return; }
-                    if (currentBoard[index] !== null) { console.warn(`TX abort: Célula ${index} ocupada.`); return; } // Usa currentBoard
-
+                    if (currentState.winner || currentState.currentPlayer !== playerId || !currentState.player2_uuid || currentBoard[index] !== null) { return; } // Aborta
                     console.log(`TX: Jogada VÁLIDA ${index}.`);
-                    // Modifica o estado (usa a cópia normalizada currentBoard)
-                    currentBoard[index] = playerId === 1 ? 'X' : 'O';
-                    currentState.board = currentBoard; // Salva array normalizado
-
-                    const wc = checkForWinner(currentState.board); // Passa array normalizado
-                    if (wc) { currentState.winner = wc.winner; currentState.winnerInfo = wc; currentState.scores=currentState.scores||{1:0,2:0,ties:0}; if (wc.winner === 'X') currentState.scores[1]++; else if (wc.winner === 'O') currentState.scores[2]++; else currentState.scores.ties++; }
-                    else { if (currentState.player2_uuid) { currentState.currentPlayer = currentState.currentPlayer === 1 ? 2 : 1; } else { console.log("Jogada feita, P2 pendente."); }}
+                    currentBoard[index] = playerId === 1 ? 'X' : 'O'; currentState.board = currentBoard; // Salva array normalizado
+                    const wc = checkForWinner(currentState.board);
+                    if (wc) {
+                        currentState.winner = wc.winner; currentState.winnerInfo = wc;
+                        currentState.gameStats = currentState.gameStats || { winsX: 0, winsO: 0, ties: 0 }; // Garante gameStats
+                        if (wc.winner === 'X') currentState.gameStats.winsX++;
+                        else if (wc.winner === 'O') currentState.gameStats.winsO++;
+                        else currentState.gameStats.ties++;
+                    } else { if (currentState.player2_uuid) { currentState.currentPlayer = currentState.currentPlayer === 1 ? 2 : 1; } }
                     return currentState;
                  }, (e, c, s) => { if(e)console.error("TX Click Erro:",e); else if(!c)console.warn("TX Click não commitada:", s?.val()); else console.log("TX Click commitada."); });
             }
@@ -119,13 +164,47 @@
             function checkForWinner(b) { const cm=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]; for(let c of cm){const [a,k,d]=c;if(b[a]&&b[a]===b[k]&&b[a]===b[d])return {winner:b[a],combination:c}} if(b.every(l=>l!==null))return {winner:'T'}; return null }
             // --- Função: Desenha a linha de vitória ---
              function drawWinLine(w) { if (!w || !w.combination || w.winner === 'T') return; const l=document.createElement('div'); l.classList.add('win-line'); requestAnimationFrame(()=>{const br=gameBoard.getBoundingClientRect(); const ce=gameBoard.querySelectorAll('.cell'); if(ce.length!==9)return; const [s, m, e]=w.combination; const sr=ce[s]?.getBoundingClientRect(); const er=ce[e]?.getBoundingClientRect(); const mr=ce[m]?.getBoundingClientRect(); if(!sr||!er||!mr)return; const sx=sr.left+sr.width/2-br.left; const sy=sr.top+sr.height/2-br.top; const ex=er.left+er.width/2-br.left; const ey=er.top+er.height/2-br.top; const angle=Math.atan2(ey-sy,ex-sx)*180/Math.PI; const len=Math.sqrt(Math.pow(ex-sx,2)+Math.pow(ey-sy,2))+(sr.width*0.8); l.style.width=`${len}px`; l.style.height='8px'; const mx=mr.left+mr.width/2-br.left; const my=mr.top+mr.height/2-br.top; l.style.top=`${my}px`; l.style.left=`${mx}px`; l.style.transform=`translate(-50%,-50%) rotate(${angle}deg)`; l.style.transformOrigin='center center'; gameBoard.appendChild(l)}) }
-            // --- Função: Atualizar Placar ---
-            function updateScoreboard(s) { player1InfoEl.textContent = `${playerNames[1]} (X): ${s[1]}`; player2InfoEl.textContent = `${playerNames[2]} (O): ${s[2]}`; }
+
+            // --- Função: Atualizar Placar (Mostra Vitórias) ---
+            function updateScoreboard(gameStats) {
+                player1InfoEl.innerHTML = `${playerNames[1]} (X) <span class="victories">Vitórias: ${gameStats.winsX}</span>`;
+                player2InfoEl.innerHTML = `${playerNames[2]} (O) <span class="victories">Vitórias: ${gameStats.winsO}</span>`;
+            }
+
             // --- Função: Atualizar Info de Turno e Fim de Jogo ---
-            function updateTurnInfo(cp, w, p2u) { player1InfoEl.classList.remove('active'); player2InfoEl.classList.remove('active'); if (w !== null) { let wn=w==='X'?playerNames[1]:(w==='O'?playerNames[2]:null); let msg=wn?`${wn} Venceu!`:'Empate!'; turnInfoEl.textContent = `Fim de Jogo! ${msg}`; } else { if(!p2u) { turnInfoEl.textContent = "Aguardando Jogador 2..."; return; } const cpn = playerNames[cp]; const m = cp===1?'X':'O'; if (playerId===cp) { turnInfoEl.textContent = `É a sua vez, ${cpn} (${m})!`; } else { turnInfoEl.textContent = `Vez de ${cpn} (${m})`; } if (cp===1) player1InfoEl.classList.add('active'); else player2InfoEl.classList.add('active'); } }
+            function updateTurnInfo(currentPlayer, winner, player2_uuid) {
+                 player1InfoEl.classList.remove('active'); player2InfoEl.classList.remove('active');
+                 if (winner !== null) { let wn=winner==='X'?playerNames[1]:(winner==='O'?playerNames[2]:null); let msg=wn?`${wn} Venceu a Rodada!`:'Empate!'; turnInfoEl.textContent = `Fim da Rodada! ${msg}`; playAgainBtn.style.display = 'block'; } // Mostra botão
+                 else { if(!player2_uuid) { turnInfoEl.textContent = "Aguardando Jogador 2..."; return; } const cpn = playerNames[currentPlayer]; const m = cp===1?'X':'O'; if (playerId===cp) { turnInfoEl.textContent = `É a sua vez, ${cpn} (${m})!`; } else { turnInfoEl.textContent = `Vez de ${cpn} (${m})`; } if (cp===1) player1InfoEl.classList.add('active'); else player2InfoEl.classList.add('active'); playAgainBtn.style.display = 'none'; } // Esconde botão
+            }
+
+            // --- Função: Resetar Tabuleiro para Jogar Novamente (NOVO) ---
+            function resetBoardForNewRound() {
+                 console.log("Resetando tabuleiro para nova rodada...");
+                 gameStateRef.transaction(currentState => {
+                      if (!currentState) return null;
+                      // Só reseta se o jogo realmente acabou
+                      if (currentState.winner === null) return currentState;
+
+                      // Decide quem começa a próxima rodada (perdedor ou P2 se empate)
+                      const lastWinner = currentState.winner;
+                      currentState.currentPlayer = (lastWinner === 'X' || lastWinner === 'T') ? 2 : 1;
+
+                      // Reseta estado da rodada
+                      currentState.board = Array(9).fill(null);
+                      currentState.winner = null;
+                      currentState.winnerInfo = null;
+
+                      // Mantém: gameId, UUIDs, Nomes, gameStats
+
+                      return currentState;
+                 });
+            }
 
             // --- Event Listeners ---
-             if(resetButton){resetButton.addEventListener('click',()=>{if(confirm('Criar novo jogo? Sala atual será apagada se for Jogador 1.')){isGameActive=false; if(gameStateRef)gameStateRef.off(); if(playerId===1&&gameStateRef){gameStateRef.remove().catch(e=>console.error("Erro remover:",e)).finally(()=>{window.history.replaceState(null,null,window.location.pathname); window.location.reload()})} else {window.history.replaceState(null,null,window.location.pathname); window.location.reload()}}})} else {console.error("ERRO: Botão Reset não encontrado!")}
+             if(resetButton){resetButton.addEventListener('click',()=>{if(confirm('Voltar ao Lobby? Jogo será encerrado se for Jogador 1.')){isGameActive=false; if(gameStateRef)gameStateRef.off(); if(playerId===1&&gameStateRef){gameStateRef.remove().catch(e=>console.error("Erro remover:",e)).finally(()=>window.location.href='index.html')} else {window.location.href='index.html'}}})} else {console.error("ERRO: Botão Reset não encontrado!")}
+             // NOVO Listener
+             if(playAgainBtn){ playAgainBtn.addEventListener('click', resetBoardForNewRound); } else { console.error("ERRO: Botão Jogar Novamente não encontrado!")}
 
             // --- Inicia o Jogo ---
             initGame();
